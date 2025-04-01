@@ -17,7 +17,7 @@ def identity_role(email):
     admin = [
         "manager@tradingsol.com", "jsanchez@tradingsol.com", "pricing2@tradingsol.com", "pricing@tradingsol.com"
     ]
-    scrap_team = ["bds@tradingsol.com", "insidesales@tradingsol.com", "sales@tradingsol.com"]
+    scrap_team = ["bds@tradingsol.com", "insidesales@tradingsol.com", "sales@tradingsol.com", "pricing3@tradingsol.com"]
 
     if email in commercial:
         return "commercial"
