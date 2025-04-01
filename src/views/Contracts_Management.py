@@ -59,8 +59,11 @@ def show():
 
     contratos_df["POL"] = contratos_df["POL"].astype(str)
     contratos_df["POD"] = contratos_df["POD"].astype(str)
+    contratos_df["TIPO CONT"] = contratos_df["TIPO CONT"].astype(str)
+
     tarifas_scrap["POL"] = tarifas_scrap["POL"].astype(str)
     tarifas_scrap["POD"] = tarifas_scrap["POD"].astype(str)
+    tarifas_scrap["TIPO CONT"] = tarifas_scrap["TIPO CONT"].astype(str)
 
     contratos_df['FECHA FIN FLETE'] = contratos_df['FECHA FIN FLETE'].str.strip() 
     contratos_df['FECHA FIN FLETE'] = pd.to_datetime(contratos_df['FECHA FIN FLETE'], format='%d/%m/%Y', errors='coerce')
@@ -80,7 +83,9 @@ def show():
     if "p_destino" not in st.session_state:
         st.session_state.p_destino = None
     if "commodity" not in st.session_state:
-        st.session_state.p_destino = None
+        st.session_state.commodity_contracts = None
+    if "tipo_cont" not in st.session_state:
+        st.session_state.tipo_cont = None
 
     with col1:
         st.session_state.p_origen = st.selectbox("POL", merged_df["POL"].unique(), index=0)
@@ -89,20 +94,32 @@ def show():
         if st.session_state.p_origen:
             destinos_disponibles = merged_df[merged_df["POL"] == st.session_state.p_origen]["POD"].unique()
             st.session_state.p_destino = st.selectbox("POD", destinos_disponibles)
+    
+    col1, col2 = st.columns(2)
 
-    if st.session_state.p_origen and st.session_state.p_destino:
-        filtered_commodities = merged_df[
-            (merged_df["POL"] == st.session_state.p_origen) & 
-            (merged_df["POD"] == st.session_state.p_destino)
-        ]["COMMODITIES"].dropna().unique()
-        st.session_state.commodity_contracts = st.multiselect("Select Commodities", filtered_commodities)
+    with col1:
+        if st.session_state.p_origen and st.session_state.p_destino:
+            filtered_commodities = merged_df[
+                (merged_df["POL"] == st.session_state.p_origen) & 
+                (merged_df["POD"] == st.session_state.p_destino)
+            ]["COMMODITIES"].dropna().unique()
+            st.session_state.commodity_contracts = st.multiselect("Select Commodities", filtered_commodities)
+    with col2:
+        if st.session_state.p_origen and st.session_state.p_destino:
+            filtered_cont = merged_df[
+                (merged_df["POL"] == st.session_state.p_origen) & 
+                (merged_df["POD"] == st.session_state.p_destino) &
+                (merged_df["COMMODITIES"].isin(st.session_state.commodity_contracts))
+            ]["TIPO CONT"].dropna().unique()
+            st.session_state.tipo_cont = st.multiselect("Select Container Type", filtered_cont)
 
     if st.session_state.p_origen and st.session_state.p_destino:
         p_origen = st.session_state.p_origen
         p_destino = st.session_state.p_destino
         commodity = st.session_state.commodity_contracts
+        tipo_cont = st.session_state.tipo_cont
 
-        contratos = merged_df[(merged_df["POL"] == p_origen) & (merged_df["POD"] == p_destino) & (merged_df["COMMODITIES"].isin(commodity)) ]
+        contratos = merged_df[(merged_df["POL"] == p_origen) & (merged_df["POD"] == p_destino) & (merged_df["COMMODITIES"].isin(commodity)) & (merged_df["TIPO CONT"].isin(tipo_cont))]
 
         if not contratos.empty:
             hoy = dt.datetime.now()
@@ -121,7 +138,7 @@ def show():
 
                     for idx, ((linea, contrato_id), contrato_rows) in enumerate(row_contracts):
                         with columnas[idx]:
-                            with st.expander(f"🚢 **{linea} - {contrato_id}**", expanded=True):
+                            with st.expander(f"🚢 **{linea} - {contrato_id.strip()}**", expanded=True):
                                 contrato_info = contrato_rows.iloc[0]
                                 fields = {
                                     "Shipping Line": contrato_info.get("Línea", ""),
@@ -133,7 +150,7 @@ def show():
                                     "Transit Time": contrato_info.get("TT", ""),
                                     "Route": contrato_info.get("RUTA", ""),
                                     "Suitable Food": contrato_info.get("APTO ALIMENTO", ""),
-                                    "Valid to": contrato_info.get("FECHA FIN FLETE", "")
+                                    "Valid to": contrato_info.get("FECHA FIN FLETE", "").strftime("%Y-%m-%d") if pd.notnull(contrato_info.get("FECHA FIN FLETE", "")) else ""
                                 }
 
                                 col3, col4 = st.columns(2)
