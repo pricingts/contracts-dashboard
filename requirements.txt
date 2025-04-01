@@ -1,0 +1,9 @@
+Authlib==1.5.1
+google-auth==2.38.0
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.1
+gspread==6.2.0
+oauthlib==3.2.2
+pandas==2.2.3
+streamlit==1.44.0
+tzdata==2025.2
