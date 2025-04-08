@@ -6,18 +6,18 @@ st.set_page_config(page_title="Contracts Management", layout="wide")
 
 def identity_role(email):
     commercial = [
-        "sales2@tradingsol.com", "sales1@tradingsol.com", "sales3@tradingsol.com",
-        "sales4@tradingsol.com", "sales5@tradingsol.com"
+        "sales2@tradingsolutions.com", "sales1@tradingsolutions.com", "sales3@tradingsolutions.com",
+        "sales4@tradingsolutions.com", "sales5@tradingsolutions.com"
     ]
     pricing = [
-        "pricing2@tradingsol.com", "pricing8@tradingsol.com",
-        "pricing6@tradingsol.com", "pricing10@tradingsol.com", "pricing11@tradingsol.com",
-        "customer9@tradingsol.com",
+        "pricing2@tradingsolutions.com", "pricing8@tradingsolutions.com",
+        "pricing6@tradingsolutions.com", "pricing10@tradingsolutions.com", "pricing11@tradingsolutions.com",
+        "customer9@tradingsolutions.com",
     ]
     admin = [
-        "manager@tradingsol.com", "jsanchez@tradingsol.com", "pricing2@tradingsol.com", "pricing@tradingsol.com"
+        "manager@tradingsolutions.com", "jsanchez@tradingsolutions.com", "pricing2@tradingsolutions.com", "pricing@tradingsolutions.com", "pricing@tradingsol.com"
     ]
-    scrap_team = ["bds@tradingsol.com", "insidesales@tradingsol.com", "sales@tradingsol.com", "pricing3@tradingsol.com"]
+    scrap_team = ["bds@tradingsolutions.com", "insidesales@tradingsolutions.com", "sales@tradingsolutions.com", "pricing3@tradingsolutions.com"]
 
     if email in commercial:
         return "commercial"
