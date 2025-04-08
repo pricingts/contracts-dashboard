@@ -3,61 +3,61 @@ import streamlit as st
 def user_data():
     user = st.experimental_user.email
     users = {
-        "pricing@tradingsol.com": {
+        "pricing@tradingsolutions.com": {
             "name": "Shadia Jaafar",
             "tel": "+57 12345678",
             "position": "Data Analyst",
             "email": "pricing@tradingsol.com"
         },
-        "sales2@tradingsol.com": {
+        "sales2@tradingsolutions.com": {
             "name": "Sharon Zuñiga",
             "tel": "+57 (300) 510 0295",
             "position": "Business Development Manager",
             "email": "sales2@tradingsol.com"
         },
-        "sales1@tradingsol.com": {
+        "sales1@tradingsolutions.com": {
             "name": "Irina Paternina",
             "tel": "+57 (301) 3173340",
             "position": "Business Development Manager",
             "email": "sales1@tradingsol.com"
         },
-        "sales3@tradingsol.com": {
+        "sales3@tradingsolutions.com": {
             "name": "Johnny Farah",
             "tel": "+57 (301) 6671725",
             "position": "Manager of Americas",
             "email": "sales3@tradingsol.com"
         },
-        "sales4@tradingsol.com": {
+        "sales4@tradingsolutions.com": {
             "name": "Jorge Sánchez",
             "tel": "+57 (301) 7753510",
             "position": "Business Development Manager",
             "email": "sales4@tradingsol.com"
         },
-        "sales@tradingsol.com": {
+        "sales@tradingsolutions.com": {
             "name": "Pedro Luis Bruges",
             "tel": "+57 (304) 4969358",
             "position": "Business Development Manager",
             "email": "sales@tradingsol.com"
         },
-        "sales5@tradingsol.com": {
+        "sales5@tradingsolutions.com": {
             "name": "Ivan Zuluaga",
             "tel": "+57 (300) 5734657",
             "position": "Business Development Manager",
             "email": "sales5@tradingsol.com"
         },
-        "manager@tradingsol.com": { 
+        "manager@tradingsolutions.com": { 
             "name": "Andrés Consuegra",
             "tel": "+57 (301) 7542622",
             "position": "CEO",
             "email": "manager@tradingsol.com"
         },
-        "bds@tradingsol.com": {
+        "bds@tradingsolutions.com": {
             "name": "Stephanie Bruges",
             "tel": "+57 300 4657077",
             "position": "Business Development Specialist",
             "email": "bds@tradingsol.com"
         },
-        "insidesales@tradingsol.com": {
+        "insidesales@tradingsolutions.com": {
             "name": "Catherine Silva",
             "tel": "+57 304 4969351",
             "position": "Inside Sales",

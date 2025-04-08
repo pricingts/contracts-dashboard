@@ -48,20 +48,25 @@ if role is None:
 else:
     user = st.experimental_user.name
 
-    if role in ["commercial", "pricing"]:
+    pages_by_role = {
+    "commercial": ["Home", "Contracts Management", "New Request"],
+    "pricing": ["Home", "Contracts Management"],
+    "scrap_team": ["Home", "Contracts Management", "Scrap Rates", "New Request"],
+    "admin": ["Home", "Contracts Management", "Scrap Rates", "New Request"]
+    }
+
+    if role in pages_by_role:
         with st.sidebar:
-            page = st.radio("Go to", ["Home", "Contracts Management"])
+            page = st.radio("Go to", pages_by_role[role])
 
         if page == "Contracts Management":
             import src.views.Contracts_Management as cm
             cm.show()
 
-    if role in ["scrap_team", "admin"]:
-        with st.sidebar:
-            page = st.radio("Go to", ["Home", "Contracts Management", "Scrap Rates"])
-        if page == "Contracts Management":
-            import src.views.Contracts_Management as cm
-            cm.show()
         elif page == "Scrap Rates":
             import src.views.Scrap_Rates as sr
             sr.show()
+
+        elif page == "New Request":
+            import src.views.New_Request as nr
+            nr.show(role)
