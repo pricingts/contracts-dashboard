@@ -1638,7 +1638,8 @@ def clean_service_data(service_data):
 
 def get_name(user):
     name_mapping = {
-        "pricing@tradingsolutions.com": "Shadia Jaafar",
+        "pricing@tradingsolutions.com": "Shadia Jaafar F",
+        "pricing@tradingsol.com": "Shadia Jaafar F",
         "sales2@tradingsolutions.com": "Sharon Zuñiga",
         "sales1@tradingsolutions.com": "Irina Paternina",
         "sales3@tradingsolutions.com": "Johnny Farah", 

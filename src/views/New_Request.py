@@ -133,7 +133,10 @@ def show(role):
 
         start_time = st.session_state["start_time"]
 
-        st.session_state["sales_rep"] = st.experimental_user.name
+        email = st.experimental_user.email
+        name = get_name(email)
+
+        st.session_state["sales_rep"] = name
 
         if st.session_state["page"] == "client_name":
 
@@ -722,10 +725,8 @@ def show(role):
 
                                     # **9️⃣ Crear DataFrame y guardar**
                                     new_df = pd.DataFrame([grouped_record])
-                                    st.write(new_df)
 
                                     new_df = new_df.reindex(columns=all_quotes_columns, fill_value="")
-                                    st.write(new_df)
 
                                     st.session_state["df_all_quotes"] = pd.concat(
                                         [st.session_state.get("df_all_quotes", pd.DataFrame()), new_df],
