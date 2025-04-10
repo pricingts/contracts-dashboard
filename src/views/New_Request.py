@@ -135,7 +135,6 @@ def show(role):
 
         email = st.experimental_user.email
         name = get_name(email)
-        st.write(name)
 
         st.session_state["sales_rep"] = name
 
