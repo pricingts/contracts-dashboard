@@ -1637,19 +1637,20 @@ def clean_service_data(service_data):
     return {key: value for key, value in service_data.items() if key in allowed_keys}
 
 def get_name(user):
-    name_mapping = {
-        "pricing@tradingsolutions.com": "Shadia Jaafar F",
-        "pricing@tradingsol.com": "Shadia Jaafar F",
-        "sales2@tradingsolutions.com": "Sharon Zuñiga",
-        "sales1@tradingsolutions.com": "Irina Paternina",
-        "sales3@tradingsolutions.com": "Johnny Farah", 
-        "sales4@tradingsolutions.com": "Jorge Sánchez",
-        "sales@tradingsolutions.com": "Pedro Luis Bruges",
-        "sales5@tradingsolutions.com": "Ivan Zuluaga", 
-        "manager@tradingsolutions.com": "Andrés Consuegra",
-        "bds@tradingsolutions.com": "Stephanie Bruges",
-        "insidesales@tradingsolutions.com": "Catherine Silva"
+    user_mapping = {
+        "pricing": "Shadia Jaafar",
+        "sales2": "Sharon Zuñiga",
+        "sales1": "Irina Paternina",
+        "sales3": "Johnny Farah", 
+        "sales4": "Jorge Sánchez",
+        "sales": "Pedro Luis Bruges",
+        "sales5": "Ivan Zuluaga", 
+        "sales6": "Felipe Hoyos",
+        "manager": "Andrés Consuegra",
+        "bds": "Stephanie Bruges",
+        "insidesales": "Catherine Silva"
     }
 
-    return name_mapping.get(user, None)
+    username = user.split("@")[0]
+    return user_mapping.get(username, None)
 
