@@ -156,7 +156,9 @@ def show():
                                     "Transit Time": contrato_info.get("TT", ""),
                                     "Route": contrato_info.get("RUTA", ""),
                                     "Suitable Food": contrato_info.get("APTO ALIMENTO", ""),
-                                    "Valid to": contrato_info.get("FECHA FIN FLETE", "").strftime("%Y-%m-%d") if pd.notnull(contrato_info.get("FECHA FIN FLETE", "")) else ""
+                                    "Valid to": contrato_info.get("FECHA FIN FLETE", "").strftime("%Y-%m-%d") if pd.notnull(contrato_info.get("FECHA FIN FLETE", "")) else "",
+                                    "Registered": contrato_info.get("Estado", ""),
+                                    "Empty Pickup": contrato_info.get("EMPTY PICKUP", ""),
                                 }
 
                                 col3, col4 = st.columns(2)
@@ -206,7 +208,7 @@ def show():
                                         available_cargo_types = tabla_pivot.columns.unique().tolist()
 
                                     tabla_pivot.rename_axis("CONCEPT", inplace=True)
-                                    nuevo_orden =  ["ORIGEN", "FLETE", "DESTINO", "TOTAL FLETE Y ORIGEN", "HBL", "Switch", "TOTAL FLETE, ORIGEN Y DESTINO", "TOTAL FLETE, ORIGEN Y SWITCH O HBL"]
+                                    nuevo_orden =  ["ORIGEN", "FLETE", "TOTAL FLETE Y ORIGEN", "DESTINO", "HBL", "Switch", "TOTAL FLETE, ORIGEN Y DESTINO", "TOTAL FLETE, ORIGEN Y SWITCH O HBL"]
                                     tabla_pivot = tabla_pivot.reindex(nuevo_orden)
                                     tabla_pivot.index = tabla_pivot.index.map(lambda x: x.capitalize() if isinstance(x, str) else x)
                                     tabla_pivot.dropna(how="all", inplace=True)
