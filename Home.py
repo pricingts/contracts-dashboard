@@ -10,17 +10,14 @@ def identity_role(email):
 
     roles = {
         "commercial": [
-            "sales2", "sales1", "sales3", "sales4", "sales5", "sales6"
+            "sales2", "sales1", "sales3", "sales4", "sales5", "sales6", "bds", "insidesales", "sales"
         ],
         "pricing": [
-            "pricing2", "pricing8", "pricing10", "pricing11", "customer9"
+            "pricing2", "pricing8", "pricing10", "pricing11", "customer9", "pricing3", "pricing6",
         ],
         "admin": [
             "manager", "jsanchez", "pricing2", "pricing"
         ],
-        "scrap_team": [
-            "bds", "insidesales", "sales", "pricing3", "pricing6"
-        ]
     }
 
     domain_variants = ["@tradingsolutions.com", "@tradingsol.com"]
@@ -53,9 +50,8 @@ else:
     user = st.experimental_user.name
 
     pages_by_role = {
-    "commercial": ["Home", "Contracts Management", "New Request"],
-    "pricing": ["Home", "Contracts Management"],
-    "scrap_team": ["Home", "Contracts Management", "Scrap Rates", "New Request"],
+    "commercial": ["Home", "Contracts Management", "New Request", "Scrap Rates"],
+    "pricing": ["Home", "Contracts Management", "Scrap Rates"],
     "admin": ["Home", "Contracts Management", "Scrap Rates", "New Request"]
     }
 
