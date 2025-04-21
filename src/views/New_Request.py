@@ -134,7 +134,8 @@ def show(role):
         start_time = st.session_state["start_time"]
 
         email = st.experimental_user.email
-        name = get_name(email)
+        default_name = st.experimental_user.name
+        name = get_name(email, default_name)
 
         st.session_state["sales_rep"] = name
 
@@ -470,10 +471,15 @@ def show(role):
                                         st.session_state["clients_list"].append(client)
                                         st.success(f"✅ Client '{client}' successfully saved")
                                         load_clients.clear()
+                                    
+                                    files_uploaded = upload_all_files_to_google_drive(folder_id, drive_service)
+                                    link_label = ""
+                                    if files_uploaded:
+                                        link_label = "*"
 
                                     grouped_record = {
                                         "time": end_time_str,
-                                        "request_id": f'=HYPERLINK("{folder_link}"; "{st.session_state["request_id"]}")',
+                                        "request_id": f'=HYPERLINK("{folder_link}"; "{st.session_state["request_id"]} {link_label}")',
                                         "commercial": commercial,
                                         "client": client,
                                         "client_reference": client_reference,
@@ -736,7 +742,6 @@ def show(role):
                                     save_to_google_sheets(st.session_state["df_all_quotes"], sheet_id)
 
                                     del st.session_state["request_id"]
-                                    upload_all_files_to_google_drive(folder_id, drive_service)
                                     clear_temp_directory()
                                     reset_json()
                                     st.session_state["services"] = []

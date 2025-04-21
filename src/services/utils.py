@@ -1424,15 +1424,20 @@ def handle_file_uploads(file_uploader_key, label="Attach Files*", temp_dir=TEMP_
     return list(st.session_state[file_uploader_key].values())
 
 def upload_all_files_to_google_drive(folder_id, drive_service):
+    files_uploaded = False
+
     try:
-        file_list = drive_service.files().list(q=f"'{folder_id}' in parents", fields="files(name)").execute()
+        file_list = drive_service.files().list(
+            q=f"'{folder_id}' in parents",
+            fields="files(name)"
+        ).execute()
         existing_files = {file['name'] for file in file_list.get('files', [])}
 
         for root, _, files in os.walk(TEMP_DIR):
             for file_name in files:
                 file_path = os.path.join(root, file_name)
-                
-                if file_name not in existing_files: 
+
+                if file_name not in existing_files:
                     with open(file_path, "rb") as file:
                         file_metadata = {'name': file_name, 'parents': [folder_id]}
                         media = MediaFileUpload(file_path, resumable=True)
@@ -1444,18 +1449,19 @@ def upload_all_files_to_google_drive(folder_id, drive_service):
                             supportsAllDrives=True
                         ).execute()
 
-                        #st.success(f"Uploaded file: {file_name}")
+                        files_uploaded = True  # Se subió al menos un archivo
 
                     try:
                         os.remove(file_path)
                     except Exception as e:
                         st.error(f"Error al eliminar {file_name}: {e}")
-
                 else:
                     st.warning(f"El archivo {file_name} ya existe en Google Drive. No se subirá de nuevo.")
 
     except Exception as e:
-        st.error(f"Error al subir archivos a Google Drive: {e}")
+        st.error(f"Ocurrió un error al subir los archivos: {e}")
+
+    return files_uploaded
 
 def load_existing_ids_from_sheets():
     sheet_name = "Duration Time Quotation" 
@@ -1636,7 +1642,7 @@ def clean_service_data(service_data):
 
     return {key: value for key, value in service_data.items() if key in allowed_keys}
 
-def get_name(user):
+def get_name(user, fallback):
     user_mapping = {
         "pricing": "Shadia Jaafar",
         "sales2": "Sharon Zuñiga",
@@ -1652,5 +1658,5 @@ def get_name(user):
     }
 
     username = user.split("@")[0]
-    return user_mapping.get(username, None)
+    return user_mapping.get(username, fallback)
 
