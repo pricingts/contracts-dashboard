@@ -13,10 +13,10 @@ def identity_role(email):
             "sales2", "sales1", "sales3", "sales4", "sales5", "sales6", "bds", "insidesales", "sales"
         ],
         "pricing": [
-            "pricing2", "pricing8", "pricing10", "pricing11", "customer9", "pricing3", "pricing6",
+            "pricing2", "pricing8", "pricing10", "pricing11", "customer9", "pricing6",
         ],
         "admin": [
-            "manager", "jsanchez", "pricing2", "pricing"
+            "manager", "jsanchez", "pricing2", "sjaafar", "corporate", "pricing3"
         ],
     }
 

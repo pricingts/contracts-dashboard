@@ -39,7 +39,7 @@ def show():
         ]
     )
 
-    @st.cache_data(ttl=10000)
+    @st.cache_data(ttl=1800)
     def load_data_from_gsheets(spreadsheet_id: str, worksheet_name: str) -> pd.DataFrame:
         gc = gspread.authorize(credentials)
         sh = gc.open_by_key(spreadsheet_id)
@@ -47,7 +47,7 @@ def show():
         data = worksheet.get_all_values()
         return pd.DataFrame(data[1:], columns=data[0]) if data else pd.DataFrame()
 
-    @st.cache_data(ttl=1000000)
+    @st.cache_data(ttl=1800)
     def get_all_data(sheet_names: list):
         return {sheet: load_data_from_gsheets(SPREADSHEET_ID, sheet) for sheet in sheet_names}
 

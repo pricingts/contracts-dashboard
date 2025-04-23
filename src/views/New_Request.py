@@ -191,7 +191,7 @@ def show(role):
                     st.session_state["client"] = selected_client 
 
                 if "client" in st.session_state and st.session_state["client"]:
-                    st.session_state["client_reference"] = reference
+                    st.session_state["client_reference"] = st.session_state.get("reference", "")
                     st.session_state["page"] = "add_services"
                 else:
                     st.warning("Please enter or select a valid client before proceeding.")
@@ -674,7 +674,6 @@ def show(role):
                                         if isinstance(grouped_record["reefer_details"], list):
                                             grouped_record["reefer_details"] = "\n".join(grouped_record["reefer_details"])
 
-                                        # **6️⃣ Additional Costs (destination_cost + customs_origin)**
                                         additional_costs = []
 
                                         if details.get("destination_cost", False):
