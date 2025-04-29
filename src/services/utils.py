@@ -953,10 +953,18 @@ def customs_questions(service, customs=False):
 
 def final_questions():
 
-    if "final_comments" not in st.session_state:
-        st.session_state.final_comments = st.session_state.get("temp_details", {}).get("final_comments", "")
+    if "temp_details" not in st.session_state:
+        st.session_state["temp_details"] = {}
 
-    final_comments = st.text_area("Final Comments", key="final_comments")
+    default_comments = st.session_state["temp_details"].get("final_comments", "")
+
+    comments = st.text_area(
+        "Final Comments",
+        value=default_comments,
+        key="final_comments_input"   
+    )
+
+    st.session_state["temp_details"]["final_comments"] = comments
 
     additional_documents = st.file_uploader("Attach Additional Documents", accept_multiple_files=True, key="additional_documents_files")
 
@@ -965,7 +973,7 @@ def final_questions():
         additional_documents_files = [save_file_locally(file) for file in additional_documents]
 
     return {
-        "final_comments": final_comments,
+        "final_comments": comments,
         "additional_documents_files": additional_documents_files
     }
 
@@ -1333,7 +1341,7 @@ def create_folder(folder_name, parent_folder_id):
         return None, None
 
 def log_time(start_time, end_time, duration, request_id, quotation_type):
-    sheet_name = "Duration Time Quotation" #Cambiar a Duration Time Quotation
+    sheet_name = "Duration Time Quotation"
     try:
         sheet = client_gcp.open_by_key(time_sheet_id)
         try:
@@ -1425,7 +1433,7 @@ def upload_all_files_to_google_drive(folder_id, drive_service):
                             supportsAllDrives=True
                         ).execute()
 
-                        files_uploaded = True  # Se subió al menos un archivo
+                        files_uploaded = True 
 
                     try:
                         os.remove(file_path)
@@ -1636,3 +1644,6 @@ def get_name(user, fallback):
     username = user.split("@")[0]
     return user_mapping.get(username, fallback)
 
+def save_and_add():
+    st.session_state["temp_details"]["final_comments"] = st.session_state.get("final_comments_input", "")
+    handle_add_service()

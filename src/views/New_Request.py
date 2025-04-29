@@ -121,7 +121,7 @@ def show(role):
         st.session_state["generated_ids"].add(unique_id)
         return unique_id
 
-    #------------------------------------APP----------------------------------------
+    #------------------------------------APP------------------------------------
     col1, col2, col3 = st.columns([1, 2, 1])
 
     if "initialized" not in st.session_state or not st.session_state["initialized"]:
@@ -286,13 +286,13 @@ def show(role):
 
                 with st.expander("**Final Details**", expanded=st.session_state["final_details_expander"]):
                     final_details = final_questions()
-                    st.session_state["temp_details"].update(final_details)
-                
+                    #st.session_state["temp_details"].update(final_details)
+
                 col1, col2 = st.columns([0.04, 0.3])
                 with col1:
                     st.button("Back", on_click=go_back, key="back_service") 
                 with col2:
-                    st.button("Add Service", key="add_service", on_click=handle_add_service)
+                    st.button("Add Service", key="add_service", on_click=save_and_add)
 
         #-----------------------------------------GROUND TRANSPORTATION-----------------------------------------
             elif service == "Ground Transportation": 
@@ -316,7 +316,7 @@ def show(role):
                 with col1:
                     st.button("Back", on_click=go_back, key="back_service") 
                 with col2:
-                    st.button("Add Service", key="add_service", on_click=handle_add_service)
+                    st.button("Add Service", key="add_service", on_click=save_and_add)
 
             elif service == "Customs Brokerage":
                 st.subheader("Customs Brokerage")
@@ -339,7 +339,7 @@ def show(role):
                 with col1:
                     st.button("Back", on_click=go_back, key="back_service") 
                 with col2:
-                    st.button("Add Service", key="add_service", on_click=handle_add_service)
+                    st.button("Add Service", key="add_service", on_click=save_and_add)
 
         elif st.session_state["page"] == "requested_services":
 
@@ -561,14 +561,22 @@ def show(role):
                                                 length_unit = p.get("length_unit", "CM")
                                                 total_weight_all += p.get("total_weight", 0)
 
-                                                if transport_type == "Air":
+                                                if transport_type.lower() == "air":
                                                     volume_value = p.get("kilovolume", 0)
                                                     volume_label = "KVM"
                                                 else:
                                                     volume_value = p.get("volume", 0)
                                                     volume_label = "CBM"
 
+                                                if transport_type.lower() == "air":
+                                                    prefix = "Air Details: "
+                                                elif transport_type.lower() == "maritime":
+                                                    prefix = f"Maritime Details: "
+                                                else:
+                                                    prefix = ""
+
                                                 pallet_str = (
+                                                    prefix +
                                                     f"{p['quantity']} {p['type_packaging']},  "
                                                     f"Unit Weight: {p['weight_lcl']:.2f} {weight_unit}, Total Weight: {p['total_weight']:.2f} KG,"
                                                     f"Volume: {volume_value:.2f} {volume_label}, "
@@ -701,25 +709,6 @@ def show(role):
                                                 all_details[key].add(str(value))
                                             else:
                                                 all_details[key] = {str(value)}
-                                    
-                                    # volumen = st.session_state.get("volumen_num", 0)
-                                    # print(volumen)
-                                    # frequency = st.session_state.get("volumen_frequency", "")
-                                    # print(frequency)
-                                    # user_comments = st.session_state.get("final_comments", "").strip()
-                                    # print(user_comments)
-
-                                    # volumen_info = f"Volumen estimado: {volumen} {frequency}" if volumen > 0 or frequency else ""
-                                    # print(volumen_info)
-
-                                    # if volumen_info and user_comments:
-                                    #     grouped_record["final_comments"] = f"{volumen_info}\n{user_comments}"
-                                    # elif volumen_info:
-                                    #     grouped_record["final_comments"] = volumen_info
-                                    # else:
-                                    #     grouped_record["final_comments"] = user_comments
-                                    
-                                    # print(grouped_record["final_comments"])
 
                                     # **8️⃣ Convertir sets a cadenas separadas por saltos de línea**
                                     for key in ["service", "container_characteristics", "imo", "routes_info", "info_pallets_str", "info_flatrack", "type_container"]:
