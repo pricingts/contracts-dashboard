@@ -6,8 +6,6 @@ google-auth-httplib2==0.2.0
 google-auth-oauthlib==1.2.1
 gspread==6.2.0
 numpy==2.2.4
-oauthlib==3.2.2
 pandas==2.2.3
-pytz==2025.2
 streamlit==1.44.0
-tzdata==2025.2
+Unidecode==1.4.0

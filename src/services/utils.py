@@ -10,6 +10,9 @@ from datetime import datetime
 import json
 import os
 import pandas as pd
+import re
+import unidecode
+import unicodedata
 
 SERVICES_FILE = "services.json"
 TEMP_DIR = "temp_uploads"
@@ -1220,34 +1223,60 @@ def handle_add_service():
 def change_page(new_page):
     st.session_state["page"] = new_page
 
-def save_to_google_sheets(dataframe, sheet_id, max_attempts=5):
-    has_pickup = dataframe["pickup_address"].notna() & (dataframe["pickup_address"].astype(str).str.strip() != "")
-    has_delivery = dataframe["delivery_address"].notna() & (dataframe["delivery_address"].astype(str).str.strip() != "")
+def _clean(s: str) -> str:
+    return re.sub(r'\s+', ' ', unidecode.unidecode(str(s).strip())).lower()
 
-    if has_pickup.any() or has_delivery.any():
-        has_routes_info = dataframe["routes_info"].notna() & (dataframe["routes_info"].astype(str).str.strip() != "")
-        pattern = r"(?i)(colombia|united states)"
-        routes_matches = dataframe["routes_info"].astype(str).str.contains(pattern, na=False, regex=True)
-        contains_routes_match = (has_routes_info & routes_matches).any()
-    else:
-        contains_routes_match = False
+def _extract_country(route: str, which: str) -> str:
+    if not isinstance(route, str):
+        return ""
 
-    temp_service = dataframe["service"].astype(str).str.replace("\n", ", ")
-    is_ground = temp_service.str.contains(r"\bGround Transportation\b", na=False, regex=True)
-    contains_ground = is_ground.any()
+    route = unicodedata.normalize("NFKD", route)
+
+    parts = re.split(r"(?:→|->)", route)
+    if len(parts) < 2:
+        return ""
+
+    origin_part, dest_part = parts[0], parts[1]
+
+    if which == "origin":
+        m = re.search(r":\s*([A-Za-z ]+?)\s*(?:\(|$)", origin_part)
+    else: 
+        m = re.search(r"^\s*([A-Za-z ]+?)\s*(?:\(|$)", dest_part)
+
+    return _clean(m.group(1)) if m else ""
+
+def save_to_google_sheets(df: pd.DataFrame, sheet_id: str, max_attempts: int = 5):
+
+    has_pickup   = df["pickup_address"].notna()   & df["pickup_address"].astype(str).str.strip().ne("")
+    has_delivery = df["delivery_address"].notna() & df["delivery_address"].astype(str).str.strip().ne("")
+
+    origin_country = df["routes_info"].apply(_extract_country, which='origin')
+    dest_country   = df["routes_info"].apply(_extract_country, which='dest')
+
+    valid_countries = {"colombia", "united states", "usa"}
+    pickup_ok   = has_pickup   & origin_country.isin(valid_countries)
+    delivery_ok = has_delivery & dest_country.isin(valid_countries)
+    route_ok    = (pickup_ok | delivery_ok).any()
+
+    temp_service       = df["service"].astype(str).str.replace("\n", ", ")
+    contains_ground_srv = temp_service.str.contains(r"\bGround Transportation\b", case=False, na=False).any()
+    multiple_services   = temp_service.str.contains(",", na=False).any()
 
     attempts = 0
     while attempts < max_attempts:
         try:
-            if contains_routes_match:
-                save_data_to_google_sheets(dataframe, sheet_id, "Ground Quotations") #cambiar a Ground Quotations
-                save_data_to_google_sheets(dataframe, sheet_id, "All Quotes")  # CAMBIAR A All Quotes si es necesario
-            elif contains_ground:
-                save_data_to_google_sheets(dataframe, sheet_id, "Ground Quotations") #cambiar a Ground Quotations
-                if temp_service.str.contains(",").any():
-                    save_data_to_google_sheets(dataframe, sheet_id, "All Quotes")  # CAMBIAR A All Quotes si es necesario
+            if contains_ground_srv:
+                save_data_to_google_sheets(df, sheet_id, "Ground Quotations") #cambiar a Ground Quotations
+                if multiple_services:                   
+                    save_data_to_google_sheets(df, sheet_id, "All Quotes") #cambiar a All Quotes
+
+            elif route_ok:
+                save_data_to_google_sheets(df, sheet_id, "Ground Quotations") #cambiar a Ground Quotations
+                save_data_to_google_sheets(df, sheet_id, "All Quotes") #cambiar a All Quotes
+
             else:
-                save_data_to_google_sheets(dataframe, sheet_id, "All Quotes")  # CAMBIAR A All Quotes si es necesario
+                save_data_to_google_sheets(df, sheet_id, "All Quotes") #cambiar a All Quotes
+
             return 
 
         except Exception as e:
@@ -1255,7 +1284,7 @@ def save_to_google_sheets(dataframe, sheet_id, max_attempts=5):
             st.error(f"Intento {attempts}/{max_attempts}: Error al guardar en Google Sheets: {e}")
             if attempts == max_attempts:
                 st.error("Se alcanzó el máximo de intentos. No se pudo guardar la cotización.")
-                raise e
+                raise
 
 def save_data_to_google_sheets(dataframe, sheet_id, sheet_name, max_attempts=5):
     attempts = 0
@@ -1341,7 +1370,7 @@ def create_folder(folder_name, parent_folder_id):
         return None, None
 
 def log_time(start_time, end_time, duration, request_id, quotation_type):
-    sheet_name = "Duration Time Quotation"
+    sheet_name = "Duration Time Quotation" #CAMBIAR A Duration Time Quotation
     try:
         sheet = client_gcp.open_by_key(time_sheet_id)
         try:
