@@ -61,7 +61,7 @@ else:
 
         if page == "Contracts Management":
             import src.views.Contracts_Management as cm
-            cm.show()
+            cm.show(role)
 
         elif page == "Scrap Rates":
             import src.views.Scrap_Rates as sr

@@ -3,11 +3,11 @@ import streamlit as st
 def user_data():
     user = st.experimental_user.email
     users = {
-        "pricing@tradingsolutions.com": {
+        "sjaafar@tradingsolutions.com": {
             "name": "Shadia Jaafar",
             "tel": "+57 12345678",
             "position": "Data Analyst",
-            "email": "pricing@tradingsol.com"
+            "email": "sjaafar@tradingsolutions.com"
         },
         "sales2@tradingsolutions.com": {
             "name": "Sharon Zuñiga",
