@@ -188,6 +188,7 @@ def select_options(role, contrato_id, available_cargo_types, tabla_pivot):
         cargo_value = 0.0
         insurance_cost = 0.0
         insurance_sale = 0.0
+        total_profit = 0
 
         if incoterm == "CIF":
             cargo_value = st.number_input(f'Enter Cargo Value', min_value=0.0, step=0.01, key=f'cargo_value_{contrato_id}')
@@ -199,6 +200,9 @@ def select_options(role, contrato_id, available_cargo_types, tabla_pivot):
             with col2:
                 insurance_sale = st.number_input(f'Sale of Insurance', min_value=0.0, step=0.01, key=f'insurance_{contrato_id}')
 
+            insurance_profit = insurance_sale - insurance_cost
+            total_profit += insurance_profit
+
         if not cargo_types:
             st.warning('Please select a container to continue')
             return
@@ -208,7 +212,6 @@ def select_options(role, contrato_id, available_cargo_types, tabla_pivot):
         tabla_pivot = tabla_pivot.map(parse_price)
 
         surcharge_values = {surcharge: {} for surcharge in selected_surcharges}
-        total_profit = 0
 
         cols = st.columns(len(cargo_types) * 2)
         for idx, cont in enumerate(cargo_types):
@@ -299,6 +302,9 @@ def select_options(role, contrato_id, available_cargo_types, tabla_pivot):
         for i in sorted(to_remove, reverse=True):
             del st.session_state["additional_surcharges"][i]
         
+        default_notes = st.session_state["selected_data"].get("Notes", "")
+        edited_notes = st.text_area("**Notes**", value=default_notes, height=150)
+        
         st.write(f'**Total Profit: ${total_profit:.2f}**')
 
         if st.button("Generate Quotation"):
@@ -330,7 +336,7 @@ def select_options(role, contrato_id, available_cargo_types, tabla_pivot):
                 "commercial": st.session_state["selected_data"].get("Commercial", ""),
                 "contract_id": contrato_id,
                 "Details": st.session_state["selected_data"].get("Details", {}),
-                "Notes": st.session_state["selected_data"].get("Notes", "")
+                "Notes": edited_notes
             }
             #st.write(quotation_data)
 

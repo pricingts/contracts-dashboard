@@ -1502,14 +1502,11 @@ def load_existing_ids_from_sheets():
 @st.cache_data(ttl=3600)
 def load_clients():
     sheet_name = "clientes"
-    
     try:
         sheet = client_gcp.open_by_key(time_sheet_id)
         worksheet_list = [ws.title for ws in sheet.worksheets()]
-        
         if sheet_name not in worksheet_list:
             return []
-
         worksheet = sheet.worksheet(sheet_name)
         clientes = worksheet.col_values(1)
 
@@ -1521,7 +1518,7 @@ def load_clients():
         st.error(f"No se encontró la pestaña '{sheet_name}' en la hoja de cálculo.")
     except Exception as e:
         st.error(f"Error al cargar los clientes desde Google Sheets: {e}")
-    
+
     return []
 
 def go_back():
